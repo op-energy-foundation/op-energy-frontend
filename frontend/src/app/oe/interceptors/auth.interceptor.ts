@@ -28,7 +28,6 @@ export class AuthInterceptor implements HttpInterceptor {
     const isApiV2 = request.url.includes('api/v2');
     const isAuthExempt =
       request.url.includes('/api/v1/account/register') ||
-      request.url.includes('/api/v1/account/login') ||
       request.url.includes('/api/v2/account/login');
 
     if ((!isApiV1 && !isApiV2) || isAuthExempt) {

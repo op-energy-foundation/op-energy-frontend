@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {
   Block,
-  BlockTimeStrike,
-  BlockTimeStrikePublic,
 } from '../../../interfaces/oe-energy.interface';
 import { BlockTypes, Logos } from '../../../types/constant';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import {
-  OeBlocktimeApiService,
   OeEnergyApiService,
 } from '../../../services/oe-energy.service';
 import { OeStateService } from '../../../services/state.service';
@@ -32,23 +29,16 @@ export class HashrateComponent implements OnInit {
   logos = Logos;
   isLoadingBlock = true;
   subscription: Subscription;
-  strike: BlockTimeStrike = {} as BlockTimeStrike;
   fromBlock: Block;
   toBlock: Block;
   latestBlock: Block;
-  disabled: boolean = false;
-  isSelected: boolean = false;
-  selectedGuess: string;
-  strikeKnown = false;
   color = 'red';
-  strikesData = [] as BlockTimeStrikePublic[];
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private oeEnergyApiService: OeEnergyApiService,
     private stateService: OeStateService,
-    private oeBlocktimeApiService: OeBlocktimeApiService,
     private toastr: ToastrService
   ) {}
 

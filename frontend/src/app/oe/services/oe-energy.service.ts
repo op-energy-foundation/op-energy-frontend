@@ -7,8 +7,6 @@ import {
   BackendGitHash,
   BlockSpanHeaders,
   RegisterResult,
-  BlockTimeStrikeGuessPublic,
-  PaginationResponse,
   LoginResult,
   EitherBlockSpansResponse,
 } from '../interfaces/oe-energy.interface';
@@ -226,41 +224,4 @@ export class OeBlocktimeApiService {
     );
   }
 
-  $strikesGuessesWithFilter(
-    filter: any | {},
-    pageNo = 0
-  ): Observable<PaginationResponse<BlockTimeStrikeGuessPublic>> {
-    const url = `${this.apiBaseUrl}${
-      this.apiBasePath
-    }/api/v1/blocktime/strikes/guesses/page?page=${pageNo}&filter=${encodeURIComponent(
-      JSON.stringify(filter)
-    )}`;
-
-    return this.httpClient.get<PaginationResponse<BlockTimeStrikeGuessPublic>>(
-      url,
-      {
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
-  }
-
-  $strikeGuessesWithFilter(
-    blockHeight: number,
-    strikeMediantime: number,
-    pageNo: number,
-    filter: any | {}
-  ): Observable<PaginationResponse<BlockTimeStrikeGuessPublic>> {
-    const url = `${this.apiBaseUrl}${
-      this.apiBasePath
-    }/api/v1/blocktime/strike/guesses/page/${blockHeight}/${strikeMediantime}?page=${pageNo}&filter=${encodeURI(
-      JSON.stringify(filter)
-    )}`;
-
-    return this.httpClient.get<PaginationResponse<BlockTimeStrikeGuessPublic>>(
-      url,
-      {
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
-  }
 }

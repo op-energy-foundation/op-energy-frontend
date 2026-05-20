@@ -1,16 +1,10 @@
 import { TABLE_HEADERS } from './strikes-range.interface';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  OeBlocktimeApiService,
-} from '../../services/oe-energy.service';
 import { BlockrateTimeStrikeService } from '../../services/blockratetimestrike.service';
 import {
   Block,
   BlockSpanTimeStrike,
-  BlockTimeStrike,
-  BlockTimeStrikeGuessPublic,
   PaginationResponse,
-  StrikeDetails,
   StrikesFilter,
   TableColumn,
 } from '../../interfaces/oe-energy.interface';
@@ -67,7 +61,6 @@ export class StrikesRangeComponent implements OnInit, OnDestroy {
   FormatType = FormatType;
 
   constructor(
-    private oeBlocktimeApiService: OeBlocktimeApiService,
     private blockrateTimeStrikeService: BlockrateTimeStrikeService,
     private stateService: OeStateService,
     private route: ActivatedRoute,
@@ -206,30 +199,16 @@ export class StrikesRangeComponent implements OnInit, OnDestroy {
   private fetchBulkGuesses(): void {
     if (!this.widgetData.length) return;
 
-    const heights = this.widgetData.map((w) => w.strike.block);
-    const minHeight = Math.min(...heights);
-    const maxHeight = Math.max(...heights);
-
-    this.oeBlocktimeApiService
-      .$strikesGuessesWithFilter({
-        strikeBlockHeightGTE: minHeight,
-        strikeBlockHeightLTE: maxHeight,
-      })
-      .pipe(catchError(() => of(null)))
-      .subscribe((response: PaginationResponse<BlockTimeStrikeGuessPublic>) => {
-        if (!response?.results?.length) return;
-
-        const guessMap = new Map<string, 'slow' | 'fast'>();
-        response.results.forEach((g) => {
-          const key = `${g.strike.block}:${g.strike.strikeMediantime}`;
-          guessMap.set(key, g.guess);
+    this.widgetData.forEach((item, index) => {
+      this.blockrateTimeStrikeService
+        .$strikeGuessPerson(item.strike.block, item.strike.mediantime)
+        .pipe(catchError(() => of(null)))
+        .subscribe((response) => {
+          if (response?.guess) {
+            this.widgetData[index] = { ...this.widgetData[index], existingGuess: response.guess };
+          }
         });
-
-        this.widgetData = this.widgetData.map((item) => {
-          const key = `${item.strike.block}:${item.strike.mediantime}`;
-          return { ...item, existingGuess: guessMap.get(key) };
-        });
-      });
+    });
   }
 
   private handleError(error: any): void {

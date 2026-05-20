@@ -12,7 +12,7 @@
         <tbody>
             <ng-container *ngIf="guessStrike.length > 0; else noData">
                 <tr *ngFor="let guess of guessStrike"
-                    (click)="redirectToSummary($event, guess.strike.block, guess.strike.strikeMediantime, guess.strike.observedResult)"
+                    (click)="redirectToSummary($event, guess.strike.block, guess.strike.mediantime, guess.strike.observedResult)"
                     class="clickable-row">
                     <td>{{ guess.strike.block }}</td>
                     <td>{{ guess.guess }}</td>
@@ -22,7 +22,7 @@
                     <td>
                         {{ (guess.creationTime * 1000 | date:'medium')}}
                     </td>
-                    <td>{{ guess.strike.strikeMediantime * 1000 | date:'medium' }}</td>
+                    <td>{{ guess.strike.mediantime * 1000 | date:'medium' }}</td>
                 </tr>
             </ng-container>
             <ng-template #noData>

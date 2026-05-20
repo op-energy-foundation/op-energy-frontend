@@ -17,6 +17,11 @@
                         <app-guessing-block type="ice" color="#6fa8dc" (selectedBlock)="handleSelectedGuess($event)"
                             [disabled]="!!selectedGuess" [isSelected]="selectedGuess === 'slow'" [ngbTooltip]="strikeKnown ? 'Can\'t add guess as strike outcome is known' : null"></app-guessing-block>
                     </div>
+                    <div class="oe-guess-summary" *ngIf="totalGuesses > 0">
+                        <span class="text-danger">🔥 {{ guessesSummary.fastCount }}</span>
+                        <span class="text-muted mx-1">|</span>
+                        <span class="text-info">❄️ {{ guessesSummary.slowCount }}</span>
+                    </div>
                     <div class="oe-message-container">
                         <div class="oe-message-text" *ngIf="!strike.observedResult && selectedGuess === 'fast'">You
                             guessed

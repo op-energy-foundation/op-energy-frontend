@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {
   BlockSpanTimeStrike,
+  BlockSpanTimeStrikeGuess,
   BlockSpanTimeStrikeGuessesSummary,
   BlockTimeStrikeGuessPublic,
   PaginationResponse,
@@ -104,6 +105,18 @@ export class BlockrateTimeStrikeService {
     const resolvedSpanSize = this.resolveSpanSize(spanSize);
     const url = `${this.strikesBaseUrl}/strike/${blockHeight}/${strikeMediantime}/guesses/summary?spanSize=${resolvedSpanSize}`;
     return this.httpClient.get<BlockSpanTimeStrikeGuessesSummary>(url, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  $strikesGuessesWithFilter(
+    filter: any | {},
+    pageNo = 0
+  ): Observable<PaginationResponse<BlockSpanTimeStrikeGuess>> {
+    const url = `${this.strikesBaseUrl}/strikes/guesses?page=${pageNo}&filter=${encodeURIComponent(
+      JSON.stringify(filter)
+    )}`;
+    return this.httpClient.get<PaginationResponse<BlockSpanTimeStrikeGuess>>(url, {
       headers: { 'Content-Type': 'application/json' },
     });
   }
