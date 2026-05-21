@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import {
-  OeAccountApiService,
-  OeBlocktimeApiService,
-} from '../../services/oe-energy.service';
-import { BlockTimeStrikeGuessPublic } from '../../interfaces/oe-energy.interface';
+import { OeAccountApiService } from '../../services/oe-energy.service';
+import { BlockrateTimeStrikeService } from '../../services/blockratetimestrike.service';
+import { BlockSpanTimeStrikeGuess } from '../../interfaces/oe-energy.interface';
 import { APP_CONFIGURATION } from '../../types/constant';
 
 @Component({
@@ -14,12 +12,12 @@ import { APP_CONFIGURATION } from '../../types/constant';
   styleUrls: ['./my-guesses.component.scss'],
 })
 export class MyGuessesComponent implements OnInit {
-  guessStrike: BlockTimeStrikeGuessPublic[] = [];
+  guessStrike: BlockSpanTimeStrikeGuess[] = [];
 
   constructor(
     private router: Router,
     private toastr: ToastrService,
-    private oeBlocktimeApiService: OeBlocktimeApiService,
+    private blockrateTimeStrikeService: BlockrateTimeStrikeService,
     public oeAccountApiService: OeAccountApiService
   ) {}
 
@@ -28,15 +26,8 @@ export class MyGuessesComponent implements OnInit {
   }
 
   public fetchPastGuessData(pageNumber: number = 0, filter: any = {}): void {
-    const accountUUID = this.oeAccountApiService.$getAccountUUID();
-    this.oeBlocktimeApiService
-      .$strikesGuessesWithFilter(
-        {
-          ...filter,
-          personEQ: accountUUID,
-        },
-        pageNumber
-      )
+    this.blockrateTimeStrikeService
+      .$strikesGuessesWithFilter(filter, pageNumber)
       .subscribe({
         next: (data) => {
           if (!data.results || !Array.isArray(data.results)) {

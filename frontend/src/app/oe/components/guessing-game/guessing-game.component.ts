@@ -1,7 +1,8 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { Block, BlockSpanTimeStrike } from '../../interfaces/oe-energy.interface';
+import { Block, BlockSpanTimeStrike, BlockSpanTimeStrikeGuessesSummary } from '../../interfaces/oe-energy.interface';
 import { BlockrateTimeStrikeService } from '../../services/blockratetimestrike.service';
 import { ToastrService } from 'ngx-toastr';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-guessing-game',
@@ -15,6 +16,7 @@ export class GuessingGameComponent implements OnInit {
   selectedGuess: string;
   isLoadingBlock = false;
   strikeKnown: boolean = false;
+  guessesSummary: BlockSpanTimeStrikeGuessesSummary = { fastCount: 0, slowCount: 0 };
 
   constructor(
     private blockrateTimeStrikeService: BlockrateTimeStrikeService,
@@ -27,6 +29,7 @@ export class GuessingGameComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.strike && changes.strike.currentValue) {
       this.checkExistingGuess();
+      this.fetchGuessesSummary();
     }
   }
 
@@ -72,6 +75,20 @@ export class GuessingGameComponent implements OnInit {
           );
         }
       );
+  }
+
+  private fetchGuessesSummary(): void {
+    if (!this.strike) return;
+    this.blockrateTimeStrikeService
+      .$getStrikeGuessesSummary(this.strike.block, this.strike.mediantime)
+      .pipe(catchError(() => of({ fastCount: 0, slowCount: 0 })))
+      .subscribe((summary: BlockSpanTimeStrikeGuessesSummary) => {
+        this.guessesSummary = summary;
+      });
+  }
+
+  get totalGuesses(): number {
+    return this.guessesSummary.fastCount + this.guessesSummary.slowCount;
   }
 
   get span(): number {
