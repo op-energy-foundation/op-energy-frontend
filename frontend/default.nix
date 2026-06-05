@@ -1,5 +1,6 @@
 let
-  pkgs1 = import <nixpkgs> {
+  stable = import ./nixpkgs.nix;
+  pkgs1 = import stable {
     config = {};
     overlays = [
     ];
@@ -14,12 +15,10 @@ let
     ''
   );
   overlay = (import ./overlay.nix) { GIT_COMMIT_HASH = GIT_COMMIT_HASH; };
-  pkgs = import <nixpkgs> {
+  pkgs = import stable {
     config = {};
     overlays = [
       overlay
     ];
   };
-in {
-  op-energy-frontend = pkgs.op-energy-frontend;
-}
+in pkgs.op-energy-frontend
