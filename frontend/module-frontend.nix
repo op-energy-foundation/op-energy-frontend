@@ -14,7 +14,9 @@ in
   options.services.op-energy-frontend = {
     enable = lib.mkEnableOption "op-energy service";
     mainnet_api_host = lib.mkOption {
-      type = lib.types.string;
+      type = if lib.types ? "string"
+        then lib.types.string
+        else lib.types.str;
       example = "http://127.0.0.1:8999";
       default = "http://127.0.0.1:8999";
       description = ''
@@ -30,7 +32,9 @@ in
       '';
     };
     testnet_api_host = lib.mkOption {
-      type = lib.types.string;
+      type = if lib.types ? "string"
+        then lib.types.string
+        else lib.types.str;
       example = "http://127.0.0.1:8997";
       default = "http://127.0.0.1:8997";
       description = ''
@@ -46,7 +50,9 @@ in
       '';
     };
     signet_api_host = lib.mkOption {
-      type = lib.types.string;
+      type = if lib.types ? "string"
+        then lib.types.string
+        else lib.types.str;
       example = "http://127.0.0.1:8995";
       default = "http://127.0.0.1:8995";
       description = ''
